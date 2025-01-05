@@ -8,7 +8,6 @@ Je suis branche de git
 un autre ajout
 Et aussi un autre ajout....
 sdfsfsfsd
-Yoooo brooo cette fois cest la bonne uuu
  */
 @Entity
 /*
