@@ -3,7 +3,9 @@ package com.amigoscode.customer;
 import jakarta.persistence.*;
 
 import java.util.Objects;
-
+/*
+je modifi depuis le main branch
+ */
 @Entity
 /*
 Avec l'annotation @Table je peux avoir le plien controle sur ma table. par exemple je peux renommer la la table comme
