@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 /*
 Je suis branche de git
+un autre ajout
  */
 @Entity
 /*
