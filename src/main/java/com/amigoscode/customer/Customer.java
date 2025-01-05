@@ -6,6 +6,7 @@ import java.util.Objects;
 /*
 Je suis branche de git
 un autre ajout
+Et aussi un autre ajout....
  */
 @Entity
 /*
