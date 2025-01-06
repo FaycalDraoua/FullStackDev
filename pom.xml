@@ -58,6 +58,33 @@
 <!--			cette dependance injecte le Jdbc et  JdbcTemplate-->
 			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
+
+		<!-- cette dependance Fournit la bibliothèque principale pour exécuter et gérer des conteneurs Docker pendant les tests.-->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.20.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--Cette dépendance est une extension spécifique à PostgreSQL de la bibliothèque Testcontainers.-->
+		<!--Elle inclut le support dédié pour démarrer, configurer et gérer des conteneurs PostgreSQL de manière simplifiée.-->
+		<!--Elle évite d'ajouter manuellement des configurations spécifiques à PostgreSQL (comme l'image Docker ou les paramètres par défaut).-->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>1.20.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- cette dependance Intègre Testcontainers avec JUnit 5 pour automatiser et simplifier le démarrage/arrêt des conteneurs.-->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>1.20.4</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
