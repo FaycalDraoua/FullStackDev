@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository;
 public class CustomerJDBCDataAccessService implements CustomerDao{
 
     private JdbcTemplate jdbcTemplate;
-    private RowMapper<Customer> customerRowMapper;
+    private CustomerRowMapper customerRowMapper;
 
-    public CustomerJDBCDataAccessService(JdbcTemplate jdbcTemplate, RowMapper<Customer> customerRowMapper) {
+    public CustomerJDBCDataAccessService(JdbcTemplate jdbcTemplate, CustomerRowMapper customerRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.customerRowMapper = customerRowMapper;
     }

@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-/*
-Bonjour je viens de modifier depuis la branche clone et pusher dans la branche main
-dans le GitHub...
- */
+
 @RestController
 @RequestMapping("api/v1/customers")
 public class CustomerController {

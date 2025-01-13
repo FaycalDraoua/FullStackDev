@@ -38,7 +38,7 @@ public class Customer{
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            // ici le nom de la sequence id donner a (generateur) il doit faire etre le meme que celui de (name) en haut. car il lui fait reference.
+            // ici le nom de la sequence id donner a (generateur) il doit  etre le meme que celui de (name) en haut. car il lui fait reference.
             generator = "customer_id_seq"
 
     )
