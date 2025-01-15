@@ -97,7 +97,7 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
         }
 
     @Test
-    void willReturnEmptyWhenSelectAllCustomerById() {
+    void willReturnEmptyWhenSelectCustomerById() {
         //Given
         String name = FAKER.name().firstName();
         String email = FAKER.internet().emailAddress();
@@ -136,6 +136,31 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
         });
         assertThat(actualEmail).isTrue();
     }
+    @Test
+    void willReturnEmptyWhenExistPersonWithEmail() {
+        //Given
+        String name = FAKER.name().firstName();
+        String email = FAKER.internet().emailAddress();
+        Customer customer = new Customer(name,email,30);
+
+        underTest.insertCustomer(customer);
+
+        //When
+        Optional<Customer> actual = underTest.selectAllCustomers().stream().
+                filter(c-> c.getEmail().equals(email))
+                .findFirst();
+
+        boolean actualEmail = underTest.existePersonWithEmail("email@email.com");
+
+        //Then
+        assertThat(actual).isPresent().hasValueSatisfying( c ->{
+            assertThat(c.getName()).isEqualTo(customer.getName());
+            assertThat(c.getEmail()).isEqualTo(customer.getEmail());
+            assertThat(c.getAge()).isEqualTo(customer.getAge());
+                }
+        );
+        assertThat(actualEmail).isFalse();
+    }
 
     @Test
     void deleteCustomerById() {
@@ -161,7 +186,20 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
     }
 
     @Test
+    void willReturnEmptyWhenDeleteCustomerById() {
+        //Given
+        String name = FAKER.name().firstName();
+        String email = FAKER.internet().emailAddress();
+        Customer customer = new Customer(name,email,30);
 
+        underTest.insertCustomer(customer);
+
+        //When
+        underTest.deleteCustomerById(-1);
+
+        assertThat(underTest.selectAllCustomers()).isNotEmpty();
+
+    }
 
     @Test
     void existPersonWithId() {
