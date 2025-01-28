@@ -17,7 +17,8 @@ public class CustomerJPADataAccessService implements CustomerDao{
         2* En utilisant l'annotation @Autowired a condition qu'il faut enlever le final, car Spring ne peut pas
     injecter de dépendances dans un champ constant marqué comme final.
 
-    PS : ici l'attribut peux etre declarer final
+    PS : ici dans notre cas d'utilisation de la methode du constructeur, l'
+    a l'attribut peux etre declarer final
 
         3* utiliser une methode, comme un setter par exemple, comme suit :
             @Autowired

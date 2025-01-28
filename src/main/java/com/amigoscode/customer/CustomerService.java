@@ -16,6 +16,10 @@ public class CustomerService {
     private CustomerDao customerDao;
 
 
+    /**
+     * @Autowired, cette annotation n'est plus obligatoire a utiliser avec le constructeur afin d'injecter des Beans
+        mainent spring Boot peux le savoir implicitement.
+     */
     @Autowired
     public CustomerService(@Qualifier("jdbc") CustomerDao customerDao) {
 

@@ -68,6 +68,7 @@ public class CustomerJDBCDataAccessService implements CustomerDao{
                 """;
         Integer count = jdbcTemplate.queryForObject(sql,Integer.class,email);
 
+        // envoyer "True" si les 2 conditions sont vrais, cest a dire count != null et count > 0
         return count !=null && count > 0;
     }
 
@@ -93,11 +94,35 @@ public class CustomerJDBCDataAccessService implements CustomerDao{
 
     @Override
     public void updateCustomer(Customer customer) {
-        var sql = """
-                update customer
-                set name=?,email=?,age=?
-                where id=?
-                """;
-        jdbcTemplate.update(sql,customer.getName(),customer.getEmail(),customer.getAge(),customer.getId());
+
+        Customer actual = selectCustomerById(customer.getId()).orElseThrow();
+
+        if(customer.getName() != null && !customer.getName().isEmpty() && !customer.getName().equals(actual.getName())) {
+            var sql = """
+                    update customer
+                    set name=?
+                     where id=?
+                    """;
+            jdbcTemplate.update(sql,customer.getName(),customer.getId());
+        }
+
+        if(customer.getEmail() != null && !customer.getEmail().isEmpty() && !customer.getEmail().equals(actual.getEmail())) {
+            var sql = """
+                    update customer
+                    set email=?
+                    where id=?
+                    """;
+            jdbcTemplate.update(sql,customer.getEmail(),customer.getId());
+        }
+
+        if(customer.getAge() != null && customer.getAge() != actual.getAge() ) {
+            var sql = """
+                    update customer
+                    set age=?
+                    where id=?
+                    """;
+            jdbcTemplate.update(sql,customer.getAge(),customer.getId());
+        }
     }
+
 }

@@ -12,6 +12,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 
 /**
@@ -39,6 +40,7 @@ public class AbstractTestContainers {
                 postgreSQLContainer.getPassword()
         ).load();
         flyway.migrate();
+
     }
 
 
@@ -54,7 +56,7 @@ public class AbstractTestContainers {
     @Container
     protected static final PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>("postgres:latest") // postgres(pour limage postgres), latest(pour charger la derniere version). on peux tres bien preciser une version comme "postgres:14.5"
-                    .withDatabaseName("amigoscode-Dao-unit-test")
+                    .withDatabaseName("amigoscode-Dao-unit-test") //nom de la base de donnees.
                     .withUsername("amigoscode")
                     .withPassword("password");
 
@@ -96,7 +98,7 @@ public class AbstractTestContainers {
         return new JdbcTemplate(getDataSource());
     }
 
-    protected static final Faker FAKER = new Faker();
+    public static final Faker FAKER = new Faker();
 
 
 
