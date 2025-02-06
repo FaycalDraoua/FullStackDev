@@ -111,6 +111,7 @@
                     <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
+
         </plugins>
 	</build>
 

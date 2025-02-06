@@ -38,7 +38,7 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
                 20);
 
         underTest.insertCustomer(customer);
-        System.out.println("stop 0");
+
         //When
         List<Customer> customers = underTest.selectAllCustomers();
 
