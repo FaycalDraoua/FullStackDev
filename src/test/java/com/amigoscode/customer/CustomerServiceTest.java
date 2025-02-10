@@ -1,5 +1,6 @@
 package com.amigoscode.customer;
 
+import com.amigoscode.exception.DuplicateResourceException;
 import com.amigoscode.exception.ResourceNotFound;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +14,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @ExtendWith, cette annotation permet d'initialiser automatiquement les objets annote avec @Mok, @Spy, @InjectionMocks
@@ -134,6 +134,26 @@ class CustomerServiceTest {
         assertThat(capturedCustomer.getEmail()).isEqualTo(email);
         assertThat(capturedCustomer.getName()).isEqualTo(request.name());
         assertThat(capturedCustomer.getAge()).isEqualTo(request.age());
+    }
+
+    @Test
+   void willReturnThrowWhenEmailExistingWhilAddingCustomer() {
+        //Given
+        String email = "alex@gmail.com";
+
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest("Alex", email, 19);
+
+        when(customerDao.existePersonWithEmail(email)).thenReturn(true);
+
+        //When
+        assertThatThrownBy(()-> underTest.addCustomer(request))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessageContaining("Email deja utiliser");
+
+        //Then
+        /// On a utilise la methode static never() de la class Mockito, pour exprimer que j'ai customerDao n'a pu appeler insertCustomer().
+        verify(customerDao, never()).insertCustomer(any(Customer.class));
+
     }
 
     @Test
