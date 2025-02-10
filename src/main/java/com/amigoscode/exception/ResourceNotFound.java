@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
     je vais plus tot envoyer un "Not Fund" qui est plus signifiant au utilisateur.
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class ResourceNotFund extends RuntimeException {
+public class ResourceNotFound extends RuntimeException {
 
-    public ResourceNotFund(String message) {
+    public ResourceNotFound(String message) {
         super(message);
     }
 }

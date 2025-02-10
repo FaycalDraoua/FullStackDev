@@ -2,7 +2,7 @@ package com.amigoscode.customer;
 
 import com.amigoscode.exception.DuplicateResourceException;
 import com.amigoscode.exception.RequestValidationException;
-import com.amigoscode.exception.ResourceNotFund;
+import com.amigoscode.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class CustomerService {
 
     public Customer getCustomer(Integer id){
         return customerDao.selectCustomerById(id) // ici un Optional<Custoemr> est retourne
-                .orElseThrow(() -> new ResourceNotFund("Customer Not fund, id : "+id)); // ici orElseThrow
+                .orElseThrow(() -> new ResourceNotFound("Customer Not fund, id : "+id)); // ici orElseThrow
                 // extre le customer trouver dans l'Optional et le retourne. si il trouve un Optional<Vide>
                 // il va retourne le message de l'exception defini dans le lambda ici " Customer Not fund, id : "+id"
     }
@@ -61,7 +61,7 @@ public class CustomerService {
 
     public void deleteCustomer(Integer id){
         if(!customerDao.existPersonWithId(id)){
-            throw new ResourceNotFund("Customer introuvable, id : "+id);
+            throw new ResourceNotFound("Customer introuvable, id : "+id);
         }
         else {
             customerDao.deleteCustomerById(id);

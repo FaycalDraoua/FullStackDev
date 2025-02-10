@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static com.amigoscode.AbstractTestContainers.FAKER;
 
@@ -96,6 +97,7 @@ class CustomerJPADataAccessServiceTest {
 
         //Then
         verify(customerRepository).save(customer);
+
     }
 
     @Test

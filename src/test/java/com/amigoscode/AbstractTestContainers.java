@@ -26,13 +26,13 @@ public class AbstractTestContainers {
 
     /**
      * Cette annotation est utiliser pour demarrer une methode avant tous les autre methode du test.
-     * elle etre static.
+     * elle doit etre static.
      */
     @BeforeAll
     static void beforeAll() {
         /*
-        code pour migrer(creation de version) de schema de table qu'on a creer dans nos fichier Flyway.
-        Et donc la creation de la table customer avec les different contraintes.(voir fichiers de db.migration folder)
+        code pour migrer(creation de version) de schema de table qu'on a creer dans nos fichier Flyway, donc la
+        creation de la table customer avec les different contraintes.(voir fichiers de db.migration folder)
          */
         Flyway flyway = Flyway.configure().dataSource(
                 postgreSQLContainer.getJdbcUrl(),

@@ -38,7 +38,7 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
                 20);
 
         underTest.insertCustomer(customer);
-        System.out.println("stop 0");
+
         //When
         List<Customer> customers = underTest.selectAllCustomers();
 
@@ -55,8 +55,6 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
     Customer customer = new Customer(name,email,20);
 
     underTest.insertCustomer(customer);
-        System.out.println("stop1");
-
 
         Integer id = underTest.selectAllCustomers()
             .stream().filter(c-> c.getEmail().equals(email))
