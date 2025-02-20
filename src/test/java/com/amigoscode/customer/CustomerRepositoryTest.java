@@ -33,14 +33,14 @@ import static org.assertj.core.api.Assertions.assertThat;
     class CustomerRepositoryTest extends AbstractTestContainers {
 
     @Autowired
-    private CustomerRepository undeTest;
+    private CustomerRepository underTest;
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @BeforeEach
     void setUp() {
-        undeTest.deleteAll();
+        underTest.deleteAll();
         System.out.println("BEAN : "+applicationContext.getBeanDefinitionCount());
 
     }
@@ -52,15 +52,15 @@ import static org.assertj.core.api.Assertions.assertThat;
         String name = FAKER.name().firstName();
         String email = FAKER.internet().emailAddress();
         Customer customer = new Customer(name,email,30);
-        undeTest.save(customer);
+        underTest.save(customer);
 
         //When
-        Optional<Customer> actual = undeTest.findAll()
+        Optional<Customer> actual = underTest.findAll()
                 .stream()
                 .filter(c -> c.getEmail().equals(email))
                 .findFirst();
 
-        Boolean actualEmail = undeTest.existsCustomerByEmail(email);
+        Boolean actualEmail = underTest.existsCustomerByEmail(email);
 
         //Then
         assertThat(actualEmail).isTrue();
@@ -74,9 +74,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
         Customer customer = new Customer(name,email,30);
 
-        undeTest.save(customer);
+        underTest.save(customer);
 
-        Integer id = undeTest.findAll().stream()
+        Integer id = underTest.findAll().stream()
                 .filter(c -> c.getEmail().equals(email))
                 .map(Customer::getId)
                 .findFirst()
@@ -84,8 +84,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
         //When
-        Optional<Customer> actual = undeTest.findById(id);
-        Boolean actualEmail = undeTest.existsCustomerById(id);
+        Optional<Customer> actual = underTest.findById(id);
+        Boolean actualEmail = underTest.existsCustomerById(id);
 
         //Then
         assertThat(actual).isPresent().hasValueSatisfying(c ->{
@@ -104,7 +104,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         Integer id = -1;
 
         //When
-        Boolean actual = undeTest.existsById(id);
+        Boolean actual = underTest.existsById(id);
 
         //Given
         assertThat(actual).isFalse();
@@ -116,7 +116,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         String fakeEmail = FAKER.internet().emailAddress();
 
         //When
-        Boolean actualEmail = undeTest.existsCustomerByEmail(fakeEmail);
+        Boolean actualEmail = underTest.existsCustomerByEmail(fakeEmail);
 
         //Then
         assertThat(actualEmail).isFalse();
