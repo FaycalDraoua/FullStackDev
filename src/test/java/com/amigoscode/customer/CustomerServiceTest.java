@@ -1,6 +1,7 @@
 package com.amigoscode.customer;
 
 import com.amigoscode.exception.DuplicateResourceException;
+import com.amigoscode.exception.RequestValidationException;
 import com.amigoscode.exception.ResourceNotFound;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -188,11 +189,99 @@ class CustomerServiceTest {
     }
 
     @Test
-    void updateCustomer() {
+    void canUpdateAllCustomerProperties() {
         //Give
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 19);
+
+        Customer customer = new Customer(id,"Boby", "Boby@gmail.com", 23);
+
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+        /// je comprend pas pour quoi ce mock declanche une erreur, comme quoi ce moque est inutile.
+        when(customerDao.existePersonWithEmail(email)).thenReturn(false);
 
         //When
+        underTest.updateCustomer(id, request);
+
 
         //Then
+        ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+
+        verify(customerDao).updateCustomer(customerCaptor.capture());
+
+        Customer capturedCustomer = customerCaptor.getValue();
+
+        assertThat(capturedCustomer.getId()).isEqualTo(id);
+        assertThat(capturedCustomer.getEmail()).isEqualTo(email);
+        assertThat(capturedCustomer.getName()).isEqualTo(request.name());
+        assertThat(capturedCustomer.getAge()).isEqualTo(request.age());
+    }
+
+    @Test
+    void canUpdateOnlyCustomerName(){
+        //Give
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 20);
+
+        Customer customer = new Customer(id, "Boby",email, 20);
+
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+        //When
+        underTest.updateCustomer(id, request);
+
+        //Then
+        ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+
+        verify(customerDao).updateCustomer(customerCaptor.capture());
+
+        Customer capturedCustomer = customerCaptor.getValue();
+
+        assertThat(capturedCustomer.getId()).isEqualTo(id);
+        assertThat(capturedCustomer.getEmail()).isEqualTo(email);
+        assertThat(capturedCustomer.getName()).isEqualTo(request.name());
+        assertThat(capturedCustomer.getAge()).isEqualTo(customer.getAge());
+
+    }
+
+    @Test
+    void willReturnThrowWhenUpdateCustomerReturnEmailExisting() {
+        //Give
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 20);
+
+        Customer customer = new Customer(id, "Boby", "Boby@gmail.com", 20);
+
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+        when(customerDao.existePersonWithEmail(email)).thenReturn(true);
+
+        //When, Then
+        assertThatThrownBy(() -> underTest.updateCustomer(id, request))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessageContaining("Email deja utilise");
+    }
+
+    @Test
+    void willReturnThrowWhenUpdateCustomerReturnNoDataChangeFound() {
+        //Give
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Boby", email, 20);
+        Customer customer = new Customer(id, "Boby", email, 20);
+
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+        //When, Then
+        assertThatThrownBy(() -> underTest.updateCustomer(id, request))
+                .isInstanceOf(RequestValidationException.class)
+                .hasMessageContaining("No data change fund");
     }
 }
