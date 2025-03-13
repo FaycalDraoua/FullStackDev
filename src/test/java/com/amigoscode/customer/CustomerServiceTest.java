@@ -1,6 +1,7 @@
 package com.amigoscode.customer;
 
 import com.amigoscode.exception.DuplicateResourceException;
+import com.amigoscode.exception.RequestValidationException;
 import com.amigoscode.exception.ResourceNotFound;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -189,10 +190,8 @@ class CustomerServiceTest {
 
     @Test
     void updateCustomer() {
-        //Give
 
-        //When
-
-        //Then
     }
+
+
 }

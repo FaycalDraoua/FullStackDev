@@ -11,7 +11,7 @@ sdfsfsfsd
  */
 @Entity
 /*
-Avec l'annotation @Table je peux avoir le plien controle sur ma table. par exemple je peux renommer la la table comme
+Avec l'annotation @Table je peux avoir le plein controle sur ma table. par exemple je peux renommer la la table comme
 ca me chante, par defaut c'est le nom de la class en miniscul. vaux mieux laisser par default.
 Ou par exemple definir les contraints des columns de cette table(entity)
  */
