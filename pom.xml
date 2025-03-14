@@ -77,6 +77,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+
 		<!-- cette dependance Intègre Testcontainers avec JUnit 5 pour automatiser et simplifier le démarrage/arrêt des conteneurs.-->
 		<dependency>
 			<groupId>org.testcontainers</groupId>

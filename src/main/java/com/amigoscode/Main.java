@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 @SpringBootApplication
 public class Main {
@@ -65,11 +63,12 @@ public class Main {
 //            customerRepository.saveAll(customers);
 //
 //        };
+        Random random = new Random();
         return args -> {
             Faker faker = new Faker();
             String firstName = faker.name().firstName();
             String lastName = faker.name().lastName();
-            Customer customer = new Customer(firstName+" "+lastName,firstName+'.'+lastName+"@gmail.com",30);
+            Customer customer = new Customer(firstName+" "+lastName,firstName+'.'+lastName+"@gmail.com", random.nextInt(100-20+1)+20);
             customerRepository.save(customer);
         };
     }
