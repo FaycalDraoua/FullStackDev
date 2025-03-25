@@ -140,14 +140,91 @@ public class CustomerIntegrationTest {
 
         expectedCustomer.setId(id);
 
+        webTestClient.get().uri("/api/v1/customers/{customerId}", id) ///  envoyer le requette get http
+                .accept(MediaType.APPLICATION_JSON)                     /// definir le format de la reponse attendu, dans ce cas c'est du JSON
+                .exchange()                                             /// envoyer la requette
+                .expectStatus().isOk()                                  /// verifier que le status de la reponse est 200
+                .expectBody(new ParameterizedTypeReference<Customer>(){}) ///  definir le corp de la reponse, ParameterizedTypeReference<Customer>(){} est utilisé pour gérer la désérialisation correcte des types génériques (nécessaire pour les objets complexes).
+                .isEqualTo(expectedCustomer);                               /// verifier que le corp de la reponse est egale a expectedCustomer, field by field
+
+
+        ///  6. delete customer
+        webTestClient.delete().uri("/api/v1/customers/{customerId}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk();
+
+        /// 7. get customer by id, not found
         webTestClient.get().uri("/api/v1/customers/{customerId}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isNotFound();
+
+    }
+
+    @Test
+    void canUpdateCustomer(){
+
+        ///  1. create registration request
+        Faker faker = new Faker();
+        Name fakerNAme = faker.name();
+        String name = fakerNAme.fullName();
+        String email = fakerNAme.lastName()+"-"+"@addForUpdateTestInteg.com";
+        int age = faker.number().numberBetween(18, 100);
+
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest(name, email, age);
+
+        /// 2. send a post request
+        webTestClient.post().uri("/api/v1/customers")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), CustomerRegistrationRequest.class)
+                .exchange()
+                .expectStatus().isOk();
+
+        /// 3. get all cutomers
+        List<Customer> customerList = webTestClient.get().uri("/api/v1/customers")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(new ParameterizedTypeReference<Customer>() {})
+                .returnResult()
+                .getResponseBody();
+
+        /// 4. extract the cutomer id
+        var id = customerList.stream()
+                .filter(customer -> customer.getEmail().equals(email))
+                .map(Customer::getId)
+                .findFirst()
+                .orElseThrow();
+
+        /// 5. create a new request for update
+        String newName = fakerNAme.fullName();
+        int newAge = faker.number().numberBetween(18, 100);
+
+        CustomerRegistrationRequest updateRequest = new CustomerRegistrationRequest(newName, email, newAge);
+
+        /// 6. send a put request
+        webTestClient.put().uri("/api/v1/customers/{customerId}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(updateRequest), CustomerRegistrationRequest.class)
+                .exchange()
+                .expectStatus().isOk();
+
+        /// 7. get customer by id
+        Customer expectedCustomer = new Customer(newName, email, newAge);
+        expectedCustomer.setId(id);
+
+        Customer customerRecup = webTestClient.get().uri("/api/v1/customers/{customerId}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(new ParameterizedTypeReference<Customer>(){})
-                .isEqualTo(expectedCustomer);
+                .returnResult()
+                .getResponseBody();
 
-
+        assertThat(customerRecup).isEqualTo(expectedCustomer);
 
     }
 }
