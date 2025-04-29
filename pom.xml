@@ -129,6 +129,26 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<!--Le plugin maven-surefire-plugin est responsable d'exécuter les tests pendant mvn test. Donc tous les class java qui finissent
+				avec le mot "Test" si non il va pas la prendre en concideration meme si une class de test-->
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<!--Avec cette config, tu dis à Maven : ➔ « Ignore tous les fichiers de test qui finissent par IntegrationTest.
+						java pendant mvn test.
+							.Seuls les tests unitaires (ex : CustomerServiceTest.java) seront exécutés.
+							.Les tests d'intégration (ex : CustomerServiceIntegrationTest.java) seront ignorés.
+
+							PS : meme si j'avais pas exlus les test d'integration comme ici, maven-surfire par defaut execute seulement les
+							 test unitaire et il va les detecter avec le mot cle a la fin ( xxTest, xxTests, xxTestCase )
+							 et ignore les test d'integration qui finisent par convention comme ( xxIntegrationTest, xxIT, xxITCase)»-->
+						<exclude>**/*IntegrationTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
         </plugins>
 	</build>
 
