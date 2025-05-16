@@ -107,6 +107,23 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!--  pre-integration-test	➤ Démarre l’app Spring Boot (start)
+					  integration-test		➤ Exécute les tests d’intégration
+					  post-integration-test	➤ Arrête l’app Spring Boot (stop)-->
+				<executions>
+					<execution>
+						<id>pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -149,6 +166,28 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId> org.apache.maven.plugins</groupId>
+				<!-- cest le plugin qui va s'en occuper afin d'executer des tests d'integration avec la commande mvn verify -->
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<!-- cella signfi :
+							Utilise les classes compilées du dossier target/classes comme base pour exécuter les tests
+						 C’est une manière explicite de dire au plugin Failsafe où chercher les classes à tester.
+							Souvent, ce champ est automatiquement détecté, donc ce bloc est optionnel (utile dans certains cas spécifiques).-->
+					<classesDirectory>${project.build.outputDirectory}</classesDirectory>
+					<!--
+						par defaut, cest a dire sans ajouter cette balise, le plugin maven-failsafe-plugin va executer les class de tests d'integration
+						qui finissent avec  *IT.java ou *ITCase.java.
+
+						Mais en ajoutant cette balise les class de tests d'integration qui finissent avec le mot "IT" ou "IntegrationTest" c'est eux qui vont etre executer
+						si non il va pas la prendre en concideration meme si une class de test d'integration -->
+					<includes>
+						<include>**/*IntegrationTest.java</include>
+						<include>**/*IT.java</include>
+					</includes>
+				</configuration>
+			</plugin>
         </plugins>
 	</build>
 
