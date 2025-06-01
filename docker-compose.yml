@@ -1,4 +1,6 @@
 services:
+
+    # le service de la base de données
   db:
     container_name: postgres
     image: postgres
@@ -13,6 +15,21 @@ services:
     networks:
       - db
     restart: unless-stopped
+
+    # le service de l'api
+  amigoscode-api:
+    container_name: amigoscode-api
+    image: faycaldr/amigoscode-api
+    environment:
+      spring.datasource.url: jdbc:postgresql://db:5432/customer
+    ports:
+      - "8088:8080"
+    networks:
+      - db
+    depends_on:
+      - db
+    restart: unless-stopped
+
 
 networks:
   db:
