@@ -1,8 +1,8 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
-import com.amigoscode.exception.DuplicateResourceException;
-import com.amigoscode.exception.RequestValidationException;
-import com.amigoscode.exception.ResourceNotFound;
+import com.modelcontroller.exception.DuplicateResourceException;
+import com.modelcontroller.exception.RequestValidationException;
+import com.modelcontroller.exception.ResourceNotFound;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

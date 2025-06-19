@@ -1,7 +1,7 @@
-package com.amigoscode.journey;
+package com.modelcontroller.journey;
 
-import com.amigoscode.customer.Customer;
-import com.amigoscode.customer.CustomerRegistrationRequest;
+import com.modelcontroller.customer.Customer;
+import com.modelcontroller.customer.CustomerRegistrationRequest;
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
 import org.junit.jupiter.api.Test;

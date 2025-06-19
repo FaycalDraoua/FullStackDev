@@ -1,4 +1,4 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
 public record CustomerUpdateRequest(
         Integer id,

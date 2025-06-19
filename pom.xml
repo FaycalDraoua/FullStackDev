@@ -207,7 +207,7 @@
 							</tags>
 						</to>
 					<container>
-						<mainClass>com.amigoscode.Main</mainClass>
+						<mainClass>com.modelcontroller.Main</mainClass>
 					</container>
 				</configuration>
 			</plugin>

@@ -1,6 +1,6 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
-import com.amigoscode.AbstractTestContainers;
+import com.modelcontroller.AbstractTestContainers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

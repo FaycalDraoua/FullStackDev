@@ -1,9 +1,8 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
-import com.amigoscode.AbstractTestContainers;
+import com.modelcontroller.AbstractTestContainers;
 import static org.assertj.core.api.Assertions.*;
 
-import com.github.javafaker.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

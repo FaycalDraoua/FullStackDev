@@ -1,4 +1,4 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

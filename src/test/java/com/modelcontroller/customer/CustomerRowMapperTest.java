@@ -1,4 +1,4 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
 import org.junit.jupiter.api.Test;
 
@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

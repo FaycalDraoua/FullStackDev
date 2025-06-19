@@ -1,4 +1,4 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
-import static com.amigoscode.AbstractTestContainers.FAKER;
+import static com.modelcontroller.AbstractTestContainers.FAKER;
 
 class CustomerJPADataAccessServiceTest {
 

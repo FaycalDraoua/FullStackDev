@@ -1,4 +1,4 @@
-package com.amigoscode.customer;
+package com.modelcontroller.customer;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

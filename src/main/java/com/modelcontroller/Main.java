@@ -1,11 +1,8 @@
-package com.amigoscode;
+package com.modelcontroller;
 
-import com.amigoscode.customer.Customer;
-import com.amigoscode.customer.CustomerRepository;
-import com.amigoscode.customer.NameGenerator;
+import com.modelcontroller.customer.Customer;
+import com.modelcontroller.customer.CustomerRepository;
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,13 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.List;
 
 @SpringBootApplication
 public class Main {
