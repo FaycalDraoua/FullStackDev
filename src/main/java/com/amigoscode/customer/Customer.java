@@ -1,57 +1,60 @@
 package com.amigoscode.customer;
 
 import jakarta.persistence.*;
-
 import java.util.Objects;
-/*
-Je suis branche de git
-un autre ajout
-Et aussi un autre ajout....
-sdfsfsfsd
- */
+
 @Entity
 /*
-Avec l'annotation @Table je peux avoir le plein controle sur ma table. par exemple je peux renommer la la table comme
-ca me chante, par defaut c'est le nom de la class en miniscul. vaux mieux laisser par default.
-Ou par exemple definir les contraints des columns de cette table(entity)
- */
-@Table(name = "customer",
+Avec l'annotation @Table, je peux avoir le plein contrôle sur ma table.
+Par exemple, je peux renommer la table comme je veux. Par défaut, c’est le nom de la classe en minuscule.
+Il vaut mieux laisser par défaut.
+Je peux aussi y définir les contraintes sur les colonnes de cette table (entity).
+*/
+@Table(
+        name = "customer",
         uniqueConstraints = {
-        @UniqueConstraint(name = "customer_email_unique",columnNames = "email")
-        })
-public class Customer{
+                @UniqueConstraint(
+                        name = "customer_email_unique",
+                        columnNames = "email"
+                )
+        }
+)
+public class Customer {
 
-        @Id
-        @SequenceGenerator(
-            // ici (name) c'est le nom de l'id sequencce que j'utiliserai dans le code java. il n'affcete pas la BD
+    @Id
+    @SequenceGenerator(
+            // Le "name" est le nom de la séquence utilisé dans le code Java. Il n'affecte pas la BD.
             name = "customer_id_seq",
             /*
-             ici (sequenceName) c'est le nom de l'id sequence qui va exister reelement dans la BD.
-             PS : la priorite va etre donner a flyway. cela veux dire que si le nom de la sequence est different dans
-             flyway ou par defaut dans la BD(nomTable_nomColumn_seq) Hibernate va prendre ces nom la au lieu de celui la en dessou.
+             Le "sequenceName" est le nom de la séquence qui existera réellement dans la base de données.
+             Remarque : La priorité est donnée à Flyway.
+             Cela signifie que si la séquence est déjà définie par Flyway ou par défaut (sous forme nomTable_nomColumn_seq),
+             Hibernate utilisera ce nom plutôt que celui défini ici.
              */
             sequenceName = "customer_id_seq",
-            //definir le numero du commencement de la sequence
+            // Numéro de départ de la séquence
             initialValue = 1,
-            //definir le bloc de suite de sequence. par defaut c'est 50.
+            // Taille du bloc de la séquence. Par défaut, c'est 50.
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            // ici le nom de la sequence id donner a (generateur) il doit  etre le meme que celui de (name) en haut. car il lui fait reference.
+            // Le "generator" doit correspondre au "name" défini dans @SequenceGenerator
             generator = "customer_id_seq"
-
     )
     private Integer id;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private Integer age;
 
-
-    public Customer() {}
+    public Customer() {
+    }
 
     public Customer(String name, String email, Integer age) {
         this.name = name;
@@ -102,7 +105,10 @@ public class Customer{
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Customer personne = (Customer) o;
-        return Objects.equals(id, personne.id) && Objects.equals(name, personne.name) && Objects.equals(email, personne.email) && Objects.equals(age, personne.age);
+        return Objects.equals(id, personne.id) &&
+                Objects.equals(name, personne.name) &&
+                Objects.equals(email, personne.email) &&
+                Objects.equals(age, personne.age);
     }
 
     @Override

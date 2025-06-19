@@ -1,18 +1,22 @@
-create table customer(
-    id Bigserial primary key,
-    name TEXT not null,
-    email TEXT not null,
-    age INT not null
+CREATE TABLE customer (
+                          id BIGSERIAL PRIMARY KEY,
+                          name TEXT NOT NULL,
+                          email TEXT NOT NULL,
+                          age INT NOT NULL
 );
 
-/* si je pouvais creer la table et la sequence de la maniere qui va suivre afin d'avoir plus de controle. sur le
- de la sequence par exemple qui devrait matcher avec le nom celui deja creer dans l'Entity customer
+/*
+Si je voulais créer la table et la séquence séparément, pour avoir plus de contrôle — 
+par exemple sur le nom de la séquence, afin qu’il corresponde exactement à celui défini dans l'entité `Customer` — 
+je pourrais faire comme suit :
 
-create sequence customer_id_sequence;
-create table customer(
-    id Bigint not null default nextval('customer_id_sequence'),
-    name TEXT not null,
-    email TEXT not null,
-    age INT not null,
-    primary key (id)
-);*/
+CREATE SEQUENCE customer_id_sequence;
+
+CREATE TABLE customer (
+    id BIGINT NOT NULL DEFAULT nextval('customer_id_sequence'),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    age INT NOT NULL,
+    PRIMARY KEY (id)
+);
+*/

@@ -12,27 +12,25 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
-import java.util.Optional;
-
 
 /**
-cette annotation @Testcontainers :
- *pour indiquer que cest une class qui utilise des conteneur.
- *gere automatiquement le cycle de vie des conteneur dans le test(damarrage, arret...).
- *grantie que les conteneur seront charger avant le test et arreter juste apres.
+ * Cette annotation @Testcontainers :
+ * - Indique que c’est une classe qui utilise des conteneurs.
+ * - Gère automatiquement le cycle de vie des conteneurs dans les tests (démarrage, arrêt...).
+ * - Garantit que les conteneurs seront lancés avant les tests et arrêtés juste après.
  */
 @Testcontainers
 public class AbstractTestContainers {
 
     /**
-     * Cette annotation est utiliser pour demarrer une methode avant tous les autre methode du test.
-     * elle doit etre static.
+     * Cette annotation est utilisée pour exécuter une méthode une seule fois avant toutes les autres méthodes de test.
+     * Elle doit être statique.
      */
     @BeforeAll
     static void beforeAll() {
         /*
-        code pour migrer(creation de version) de schema de table qu'on a creer dans nos fichier Flyway, donc la
-        creation de la table customer avec les different contraintes.(voir fichiers de db.migration folder)
+         Code pour exécuter les migrations Flyway (création de versions de schémas de tables) définies
+         dans les fichiers du dossier db.migration, comme la table customer avec ses contraintes.
          */
         Flyway flyway = Flyway.configure().dataSource(
                 postgreSQLContainer.getJdbcUrl(),
@@ -40,49 +38,46 @@ public class AbstractTestContainers {
                 postgreSQLContainer.getPassword()
         ).load();
         flyway.migrate();
-
     }
 
-
     /**
-     * Cette annotaion indique q'une instance de conteneur testcontainers dois etre initialiser,gerer,arreter automatiquement.
-
-    Methode : Creation de la BD dans une une image Docker. Avec :
-    *le type de BD
-    *le nom de la BD
-    *le userName
-    *le Password
+     * Cette annotation @Container :
+     * - Indique qu’une instance de conteneur Testcontainers doit être initialisée, gérée et arrêtée automatiquement.
+     *
+     * Méthode : Création de la BD dans une image Docker avec :
+     * - le type de BD
+     * - le nom de la BD
+     * - le nom d’utilisateur
+     * - le mot de passe
      */
     @Container
     protected static final PostgreSQLContainer<?> postgreSQLContainer =
-            new PostgreSQLContainer<>("postgres:latest") // postgres(pour limage postgres), latest(pour charger la derniere version). on peux tres bien preciser une version comme "postgres:14.5"
-                    .withDatabaseName("amigoscode-Dao-unit-test") //nom de la base de donnees.
+            new PostgreSQLContainer<>("postgres:latest") // "postgres" pour l'image, "latest" pour la dernière version. On peut aussi spécifier une version précise comme "postgres:14.5"
+                    .withDatabaseName("amigoscode-Dao-unit-test") // Nom de la base de données
                     .withUsername("amigoscode")
                     .withPassword("password");
 
-
     /**
-     *l'annotation Permet de définir dynamiquement les propriétés de configuration Spring pour les tests.
-
-    *Methode : Configuration de Connexion a la BD qui se trouve dans l'image du Docker.
-    *PS : faut dabord creer la BD dans docker(voir le code juste en haut : postgreSQLContainer)
-    *La Methode doit etre static.
-    */
+     * L’annotation @DynamicPropertySource permet de définir dynamiquement les propriétés de configuration Spring pour les tests.
+     *
+     * Méthode : Configuration de la connexion à la BD qui se trouve dans l’image Docker.
+     * ⚠️ La méthode doit être statique.
+     */
     @DynamicPropertySource
     private static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
-        // Spring.datasource.url cest la meme config que celle du application.yml(spring datasource url)
+        // "spring.datasource.url" correspond à la propriété dans application.yml
         registry.add("spring.datasource.url", () ->
                 postgreSQLContainer.getJdbcUrl());
-// la diference de syntaxe entre celle de haut et celle d'enbas, cest la difference entre lambda expression et methode references
+
+        // Syntaxe lambda vs méthode référence (ci-dessous)
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
     }
 
     /**
-     * Methode pour creer une source de donnees, donc qui va etre connecter avec notre source de donnees qui se trouvera
-     dans l'image du conteneur posgreSQLContainer.
-     *on va l'utiliser dans le test de la class CustomerJDBCDataAcccess.
-     * @return la source de donnees.
+     * Méthode pour créer une source de données, connectée à la BD du conteneur PostgreSQL.
+     * Elle sera utilisée dans les tests de la classe CustomerJDBCDataAccessService.
+     * @return la DataSource connectée au conteneur.
      */
     protected static DataSource getDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create()
@@ -99,9 +94,4 @@ public class AbstractTestContainers {
     }
 
     public static final Faker FAKER = new Faker();
-
-
-
 }
-
-

@@ -18,13 +18,16 @@ class CustomerJDBCDataAccessServiceTest extends AbstractTestContainers {
     private final CustomerRowMapper customerRowMapper = new CustomerRowMapper();
 
     /**
-    * Cette annotation ainsi que ca methode setUp() permet de s'executer avant chaque debut de @Test. Cela veux que
-    pour chaque methode qu'on voit en bas annoter avec @Test et qui va passer le test unitaire comme selectAllCustomers,
-    selectCustomerById... une nouvelle instance de underTest va etre creer.
-     * Le paramettre d'entre getJdbcTemplate(), nous permet de se connecter avec la base de donnees qui charger dans une image Docker
-     * la base de donnees n'est pas renitialiser a chaque creation d'instance de underTest dans @BeforEach. la base de donnees sera
-        la meme et partage par tous les methode de test(ce qui est logique pour le principe d'une BD).
+     * Cette annotation, ainsi que sa méthode setUp(), permet d'exécuter du code avant chaque méthode annotée avec @Test.
+     * Cela signifie que pour chaque méthode de test unitaire (comme selectAllCustomers, selectCustomerById, etc.)
+     * une nouvelle instance de `underTest` sera créée.
+     *
+     * Le paramètre d'entrée `getJdbcTemplate()` permet de se connecter à la base de données chargée dans une image Docker.
+     *
+     * La base de données n'est pas réinitialisée à chaque création d'une instance de `underTest` dans @BeforeEach.
+     * Elle est partagée entre toutes les méthodes de test, ce qui est logique dans le contexte d'une base de données.
      */
+
     @BeforeEach
     void setUp() {
         underTest = new CustomerJDBCDataAccessService(getJdbcTemplate(),customerRowMapper);

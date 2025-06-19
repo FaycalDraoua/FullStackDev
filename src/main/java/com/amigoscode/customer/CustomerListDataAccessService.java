@@ -36,7 +36,6 @@ public class CustomerListDataAccessService implements CustomerDao {
 
     @Override
     public boolean existePersonWithEmail(String email) {
-        // comment il arrive a savoir que le param 'c' est de type de "Customer" ? Question to Gpt...
         return customers.stream().anyMatch(c -> c.getEmail().equals(email));
     }
 
@@ -61,7 +60,7 @@ public class CustomerListDataAccessService implements CustomerDao {
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
                 .ifPresent(customers::remove);
-                // je comprend pas cette derniere syntaxe customers::remove ?
+
     }
 
     @Override

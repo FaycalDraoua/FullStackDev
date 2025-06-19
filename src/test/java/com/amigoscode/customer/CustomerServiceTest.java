@@ -18,11 +18,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
- * @ExtendWith, cette annotation permet d'initialiser automatiquement les objets annote avec @Mok, @Spy, @InjectionMocks
-    dans la class de test, sans Avoir besoin a utiliser :
-        1. autoCloseable = MockitoAnnotations.openMocks(this) dans la méthode @BeforeEach pour initaliser les objets Moquè.
-        2. autoCloseable.close() dans la methode @AfterEach pour ferme les objets moquè.
-            (Exactement ce qu'on a fait dans la class de test CustomerJPADataAccessServiceTest, voir)
+ * @ExtendWith : cette annotation permet d'initialiser automatiquement les objets annotés avec @Mock, @Spy, @InjectMocks
+ * dans la classe de test, sans avoir besoin d’utiliser :
+ *     1. autoCloseable = MockitoAnnotations.openMocks(this) dans la méthode @BeforeEach pour initialiser les objets mockés.
+ *     2. autoCloseable.close() dans la méthode @AfterEach pour fermer les objets mockés.
+ *        (Exactement ce qu’on a fait dans la classe de test CustomerJPADataAccessServiceTest)
  */
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
@@ -31,103 +31,84 @@ class CustomerServiceTest {
     private CustomerDao customerDao;
     private CustomerService underTest;
 
-
     @BeforeEach
     void setUp() {
         underTest = new CustomerService(customerDao);
-
     }
 
     @AfterEach
-    void tearDown() {
-    }
+    void tearDown() {}
 
     @Test
     void getAllCustomers() {
-        //When
+        // When
         underTest.getAllCustomers();
 
-        //Then
+        // Then
         verify(customerDao).selectAllCustomers();
     }
 
-
     /**
      * IMPORTANT :
-     * Il faut savoir que le bute du test uniatire n'est pas de tester le COMPORTEMENT et l'INTERACTION entre les different couhes et class, mais c'est plus tot
-     * de tester le comporetement de chaque class ou couche TOUTE SEUL.
-     * <p>
-     * Par exemple ici dans le test ci-dessou de la methode getCustomer() du service, Le but de ce test unitaire n’est pas de tester l’implémentation de
-     * selectCustomerById, mais bien de tester le comportement de getCustomer(id).
-     * <p>
-     * DONC...
-     * <p>
-     * 👉 Ce qu'on veut vérifier :
-     * Est Que si customerDao.selectCustomerById(id) retourne un Optional contenant un Customer, alors getCustomer(id) retourne bien ce Customer.
-     * Que si customerDao.selectCustomerById(id) retourne un Optional.empty(), alors une exception ResourceNotFound est bien levée.
-     * ET...
-     * ⚠️ Ce qu'on ne veux pas teste ici :
-     * Est Comment customerDao.selectCustomerById(id) fonctionne réellement (avec une BD, ou un fichier, ou etc.), we don't care.
+     * Il faut savoir que le but du test unitaire n’est pas de tester le COMPORTEMENT et l’INTERACTION entre les différentes couches/classes,
+     * mais plutôt de tester le comportement de chaque classe ou couche individuellement.
+     *
+     * Par exemple ici, dans le test de la méthode getCustomer(), le but n’est pas de tester l’implémentation de
+     * selectCustomerById, mais bien le comportement de getCustomer(id).
+     *
+     * 👉 Ce qu’on veut vérifier :
+     * - Si customerDao.selectCustomerById(id) retourne un Optional contenant un Customer, alors getCustomer(id) retourne bien ce Customer.
+     * - Si customerDao.selectCustomerById(id) retourne un Optional.empty(), alors une exception ResourceNotFound est bien levée.
+     *
+     * ⚠️ Ce qu’on ne veut PAS tester ici :
+     * - Comment fonctionne réellement customerDao.selectCustomerById(id) (avec une BD, un fichier, etc.), cela ne nous concerne pas ici.
      */
     @Test
     void canGetCustomer() {
-        //Give
-
-        ///Ici on cree un customer
+        // Given
         int id = 10;
         Customer customer = new Customer(id, "Alex", "alex@gmail.com", 19);
-
-        /// ON MOCK le comportement de customerDao.selectCustomerById(), cest dire on explique a l'algorithme ce qu'il doit faire
         when(customerDao.selectCustomerById(10)).thenReturn(Optional.of(customer));
 
-        //When
-
-        /// apres le mock, on passe au test qu'on veux reelement tester et non pas mocker, est qui celui de la methode underTest.getCustomer(), donc on appele la methode
+        // When
         Customer actual = underTest.getCustomer(id);
 
-        //Then
-
-        /// ici on s'assure qu'on a eux le bon comportement attendu de la methode underTest.getCustomer();
+        // Then
         assertThat(actual).isEqualTo(customer);
     }
 
     @Test
     void willReturnThrowWhenGetCustomerReturnOptionalEmpty() {
-        //Give
+        // Given
         int id = 10;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.empty());
 
-        //When
-        //Then
-        ///assertThatThrownBy() est une methode pour capturer les exception. mais je sais toujours pas ca fonctionne.
+        // Then
         assertThatThrownBy(() -> underTest.getCustomer(id))
                 .isInstanceOf(ResourceNotFound.class)
                 .hasMessageContaining("Customer Not fund, id : " + id);
-
     }
 
     @Test
-    void CanAddCustomer() {
-        //Give
+    void canAddCustomer() {
+        // Given
         String email = "alex@gmail.com";
-
         CustomerRegistrationRequest request = new CustomerRegistrationRequest("Alex", email, 19);
         when(customerDao.existePersonWithEmail(email)).thenReturn(false);
 
-        //When
+        // When
         underTest.addCustomer(request);
 
-        //Then
+        // Then
         ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
 
         /**
-         *ici je capture le customer qui est passer dans customerDao.insertCustomer(customer), voir la methode
-         addCustomer dans le service. Ensuite on va comparer cette capture avec request pour s'assurer que les valeurs
-         qui ont ete passe a la methode addCustomer dans le service sont les meme valeurs qui ont ete ajouter a la
-         methode insertCustomer de CustomerDao.
-         *Ce que je comprend pas est que comment customerCaptor.capture() peux capturer ces information ????? faut voir avec Gpt !!!
+         * Ici je capture le Customer passé dans customerDao.insertCustomer(customer), voir la méthode
+         * addCustomer dans le service. Ensuite, on compare cette capture avec la request pour s’assurer que les valeurs
+         * passées à la méthode addCustomer sont bien celles utilisées dans insertCustomer de CustomerDao.
+         *
+         * ❓ Ce que je ne comprends pas encore : comment customerCaptor.capture() peut capturer ces informations automatiquement ?
          */
-
         verify(customerDao).insertCustomer(customerCaptor.capture());
 
         Customer capturedCustomer = customerCaptor.getValue();
@@ -139,48 +120,40 @@ class CustomerServiceTest {
     }
 
     @Test
-    void willReturnThrowWhenEmailExistingWhilAddingCustomer() {
-        //Given
+    void willReturnThrowWhenEmailExistsWhileAddingCustomer() {
+        // Given
         String email = "alex@gmail.com";
-
         CustomerRegistrationRequest request = new CustomerRegistrationRequest("Alex", email, 19);
-
         when(customerDao.existePersonWithEmail(email)).thenReturn(true);
 
-        //When
+        // Then
         assertThatThrownBy(() -> underTest.addCustomer(request))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessageContaining("Email deja utiliser");
 
-        //Then
-        /// On a utilise la methode static never() de la class Mockito, pour exprimer que j'ai customerDao n'a pu appeler insertCustomer().
         verify(customerDao, never()).insertCustomer(any(Customer.class));
-
     }
 
     @Test
     void deleteCustomer() {
-        //Give
+        // Given
         Integer id = 10;
-
         when(customerDao.existPersonWithId(id)).thenReturn(true);
 
-        //When
+        // When
         underTest.deleteCustomer(id);
 
-        //Then
+        // Then
         verify(customerDao).deleteCustomerById(id);
     }
 
     @Test
     void willReturnThrowWhenDeleteCustomerReturnFalse() {
-        //Give
+        // Given
         Integer id = 10;
-
         when(customerDao.existPersonWithId(id)).thenReturn(false);
 
-        //When
-        //Then
+        // Then
         assertThatThrownBy(() -> underTest.deleteCustomer(id))
                 .isInstanceOf(ResourceNotFound.class)
                 .hasMessageContaining("Customer introuvable, id : " + id);
@@ -188,104 +161,87 @@ class CustomerServiceTest {
         verify(customerDao, never()).deleteCustomerById(id);
     }
 
-        @Test
-        void canUpdateAllCustomerProperties () {
-            //Give
-            Integer id = 10;
-            String email = "Alex@gmail.com";
-            CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 19);
+    @Test
+    void canUpdateAllCustomerProperties() {
+        // Given
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 19);
+        Customer customer = new Customer(id, "Boby", "Boby@gmail.com", 23);
 
-            Customer customer = new Customer(id, "Boby", "Boby@gmail.com", 23);
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+        when(customerDao.existePersonWithEmail(email)).thenReturn(false);
 
-            when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+        // When
+        underTest.updateCustomer(id, request);
 
-            /// je comprend pas pour quoi ce mock declanche une erreur, comme quoi ce moque est inutile.
-            when(customerDao.existePersonWithEmail(email)).thenReturn(false);
+        // Then
+        ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+        verify(customerDao).updateCustomer(customerCaptor.capture());
 
-            //When
-            underTest.updateCustomer(id, request);
+        Customer capturedCustomer = customerCaptor.getValue();
 
+        assertThat(capturedCustomer.getId()).isEqualTo(id);
+        assertThat(capturedCustomer.getEmail()).isEqualTo(email);
+        assertThat(capturedCustomer.getName()).isEqualTo(request.name());
+        assertThat(capturedCustomer.getAge()).isEqualTo(request.age());
+    }
 
-            //Then
-            ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+    @Test
+    void canUpdateOnlyCustomerName() {
+        // Given
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 20);
+        Customer customer = new Customer(id, "Boby", email, 20);
 
-            verify(customerDao).updateCustomer(customerCaptor.capture());
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
 
-            Customer capturedCustomer = customerCaptor.getValue();
+        // When
+        underTest.updateCustomer(id, request);
 
-            assertThat(capturedCustomer.getId()).isEqualTo(id);
-            assertThat(capturedCustomer.getEmail()).isEqualTo(email);
-            assertThat(capturedCustomer.getName()).isEqualTo(request.name());
-            assertThat(capturedCustomer.getAge()).isEqualTo(request.age());
-        }
+        // Then
+        ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+        verify(customerDao).updateCustomer(customerCaptor.capture());
 
-        @Test
-        void canUpdateOnlyCustomerName () {
-            //Give
-            Integer id = 10;
-            String email = "Alex@gmail.com";
+        Customer capturedCustomer = customerCaptor.getValue();
 
-            CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 20);
+        assertThat(capturedCustomer.getId()).isEqualTo(id);
+        assertThat(capturedCustomer.getEmail()).isEqualTo(email);
+        assertThat(capturedCustomer.getName()).isEqualTo(request.name());
+        assertThat(capturedCustomer.getAge()).isEqualTo(customer.getAge());
+    }
 
-            Customer customer = new Customer(id, "Boby", email, 20);
+    @Test
+    void willReturnThrowWhenUpdateCustomerEmailAlreadyExists() {
+        // Given
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 20);
+        Customer customer = new Customer(id, "Boby", "Boby@gmail.com", 20);
 
-            when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
+        when(customerDao.existePersonWithEmail(email)).thenReturn(true);
 
-            //When
-            underTest.updateCustomer(id, request);
+        // Then
+        assertThatThrownBy(() -> underTest.updateCustomer(id, request))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessageContaining("Email deja utilise");
+    }
 
-            //Then
-            ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
+    @Test
+    void willReturnThrowWhenUpdateCustomerReturnNoDataChangeFound() {
+        // Given
+        Integer id = 10;
+        String email = "Alex@gmail.com";
+        CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Boby", email, 20);
+        Customer customer = new Customer(id, "Boby", email, 20);
 
-            verify(customerDao).updateCustomer(customerCaptor.capture());
+        when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
 
-            Customer capturedCustomer = customerCaptor.getValue();
-
-            assertThat(capturedCustomer.getId()).isEqualTo(id);
-            assertThat(capturedCustomer.getEmail()).isEqualTo(email);
-            assertThat(capturedCustomer.getName()).isEqualTo(request.name());
-            assertThat(capturedCustomer.getAge()).isEqualTo(customer.getAge());
-
-        }
-
-        @Test
-        void willReturnThrowWhenUpdateCustomerReturnEmailExisting () {
-            //Give
-            Integer id = 10;
-            String email = "Alex@gmail.com";
-
-            CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Alex", email, 20);
-
-            Customer customer = new Customer(id, "Boby", "Boby@gmail.com", 20);
-
-            when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
-
-            when(customerDao.existePersonWithEmail(email)).thenReturn(true);
-
-            //When, Then
-            assertThatThrownBy(() -> underTest.updateCustomer(id, request))
-                    .isInstanceOf(DuplicateResourceException.class)
-                    .hasMessageContaining("Email deja utilise");
-        }
-
-        @Test
-        void willReturnThrowWhenUpdateCustomerReturnNoDataChangeFound () {
-            //Give
-            Integer id = 10;
-            String email = "Alex@gmail.com";
-
-            CustomerUpdateRequest request = new CustomerUpdateRequest(id, "Boby", email, 20);
-            Customer customer = new Customer(id, "Boby", email, 20);
-
-            when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer));
-
-            //When, Then
-            assertThatThrownBy(() -> underTest.updateCustomer(id, request))
-                    .isInstanceOf(RequestValidationException.class)
-                    .hasMessageContaining("No data change fund");
-
-        }
-
-
-
+        // Then
+        assertThatThrownBy(() -> underTest.updateCustomer(id, request))
+                .isInstanceOf(RequestValidationException.class)
+                .hasMessageContaining("No data change fund");
+    }
 }

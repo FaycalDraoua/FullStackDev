@@ -6,27 +6,29 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static com.amigoscode.AbstractTestContainers.FAKER;
 
 class CustomerJPADataAccessServiceTest {
 
     /**
-     * on l'appelle egalement System Under Test(SUT)
+     * On l'appelle également System Under Test (SUT)
      */
     private CustomerJPADataAccessService underTest;
+
     /***
      * @Mock est une annotation de Mockito. Elle crée une version simulée (mockée) de l'objet CustomerRepository.
      * Cela permet d'isoler la classe testée (CustomerJPADataAccessService) de la dépendance réelle (CustomerRepository).
      * Les mocks sont utilisés pour remplacer les dépendances réelles afin de contrôler leur comportement dans les tests.
      */
-    @Mock private CustomerRepository customerRepository;
+    @Mock
+    private CustomerRepository customerRepository;
+
     /**
-     * L'appel à MockitoAnnotations.openMocks(this) Voir en bas, retourne un AutoCloseable qui doit être fermé
-        après chaque test pour nettoyer les mocks correctement(voir le code dans la methode tearDown()).
+     * L'appel à MockitoAnnotations.openMocks(this), voir ci-dessous, retourne un AutoCloseable qui doit être fermé
+     * après chaque test pour nettoyer les mocks correctement (voir le code dans la méthode tearDown()).
      */
-    private  AutoCloseable autoCloseable;
+    private AutoCloseable autoCloseable;
 
     @BeforeEach
     void setUp() {
@@ -34,107 +36,106 @@ class CustomerJPADataAccessServiceTest {
          * Initialise les objets marqués par @Mock dans la classe de test (ici, customerRepository).
          * Retourne un objet AutoCloseable, qui sera utilisé pour fermer les mocks après les tests.
          */
-         autoCloseable = MockitoAnnotations.openMocks(this);
+        autoCloseable = MockitoAnnotations.openMocks(this);
 
-         //Crée une nouvelle instance de la classe à tester (CustomerJPADataAccessService) en injectant la dépendance simulée (customerRepository).
+        // Crée une nouvelle instance de la classe à tester (CustomerJPADataAccessService) en injectant la dépendance simulée (customerRepository).
         underTest = new CustomerJPADataAccessService(customerRepository);
-
     }
 
     /**
      * @AfterEach :
-        * Indique que cette méthode doit être exécutée après chaque test.
-        * Sert à nettoyer ou libérer les ressources utilisées pendant les tests.
+     * Indique que cette méthode doit être exécutée après chaque test.
+     * Sert à nettoyer ou libérer les ressources utilisées pendant les tests.
      */
     @AfterEach
     void tearDown() throws Exception {
         autoCloseable.close();
-
     }
 
     @Test
     void selectAllCustomers() {
-        //When
+        // When
         underTest.selectAllCustomers();
 
-        //Then
+        // Then
         verify(customerRepository).findAll();
     }
 
     @Test
     void selectCustomerById() {
-        //Give
+        // Given
         int id = 1;
 
-        //When
+        // When
         underTest.selectCustomerById(id);
 
-        //Then
+        // Then
         verify(customerRepository).findById(id);
     }
 
     @Test
     void existePersonWithEmail() {
-        //Give
+        // Given
         String email = FAKER.internet().emailAddress();
 
-        //When
+        // When
         underTest.existePersonWithEmail(email);
 
-        //Then
+        // Then
         verify(customerRepository).existsCustomerByEmail(email);
     }
 
     @Test
     void insertCustomer() {
-        //Give
-        Customer customer = new Customer(FAKER.name().firstName(),
+        // Given
+        Customer customer = new Customer(
+                FAKER.name().firstName(),
                 FAKER.internet().emailAddress(),
                 30);
 
-        //When
+        // When
         underTest.insertCustomer(customer);
 
-        //Then
+        // Then
         verify(customerRepository).save(customer);
-
     }
 
     @Test
     void existPersonWithId() {
-        //Give
+        // Given
         int id = 1;
 
-        //When
+        // When
         underTest.existPersonWithId(id);
 
-        //Then
+        // Then
         verify(customerRepository).existsCustomerById(id);
     }
 
     @Test
     void deleteCustomerById() {
-        //Give
+        // Given
         int id = 1;
 
-        //When
+        // When
         underTest.deleteCustomerById(id);
 
-        //Then
+        // Then
         verify(customerRepository).deleteById(id);
     }
 
     @Test
     void updateCustomer() {
-        //Give
-        Customer customer = new Customer(FAKER.name().firstName(),
+        // Given
+        Customer customer = new Customer(
+                FAKER.name().firstName(),
                 FAKER.internet().emailAddress(),
                 30);
 
-        //When
+        // When
         underTest.updateCustomer(customer);
 
-        //Then
+        // Then
         verify(customerRepository).save(customer);
     }
 }

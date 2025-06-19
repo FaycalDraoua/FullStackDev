@@ -9,97 +9,85 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
-public class  CustomerService {
+public class CustomerService {
 
     private CustomerDao customerDao;
 
-
     /**
-     * @Autowired, cette annotation n'est plus obligatoire a utiliser avec le constructeur afin d'injecter des Beans
-        mainent spring Boot peux le savoir implicitement.
+     * @Autowired : cette annotation n’est plus obligatoire avec le constructeur pour injecter des Beans.
+     * Désormais, Spring Boot peut le deviner automatiquement.
      */
     @Autowired
     public CustomerService(@Qualifier("jdbc") CustomerDao customerDao) {
-
         this.customerDao = customerDao;
     }
 
-    public List<Customer> getAllCustomers(){
-
+    public List<Customer> getAllCustomers() {
         return customerDao.selectAllCustomers();
     }
 
-
-    public Customer getCustomer(Integer id){
-        return customerDao.selectCustomerById(id) // ici un Optional<Custoemr> est retourne
-                .orElseThrow(() -> new ResourceNotFound("Customer Not fund, id : "+id)); // ici orElseThrow
-                // extre le customer trouver dans l'Optional et le retourne. si il trouve un Optional<Vide>
-                // il va retourne le message de l'exception defini dans le lambda ici " Customer Not fund, id : "+id"
+    public Customer getCustomer(Integer id) {
+        return customerDao.selectCustomerById(id) // ici un Optional<Customer> est retourné
+                .orElseThrow(() -> new ResourceNotFound("Customer non trouvé, id : " + id));
+        // orElseThrow extrait le client trouvé dans l’Optional et le retourne.
+        // S’il ne trouve rien (Optional.empty), il lance l’exception avec le message défini.
     }
 
-    public void addCustomer(CustomerRegistrationRequest customerRegistrationRequest){
-        // on a besoin de verifier que le nouveau email a ajouter n'existe pas deja dans la bd pour un autre user
+    public void addCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
+        // On vérifie que l’email du nouveau client n’existe pas déjà dans la BD
 
         String email = customerRegistrationRequest.email();
 
-        if(customerDao.existePersonWithEmail(email)){
-            throw new DuplicateResourceException("Email deja utiliser");
+        if (customerDao.existePersonWithEmail(email)) {
+            throw new DuplicateResourceException("Email déjà utilisé");
         }
 
-        // si non ajouter le nouveau customer
-        else {
-            customerDao.insertCustomer(new Customer(
-                    customerRegistrationRequest.name(),
-                    customerRegistrationRequest.email(),
-                    customerRegistrationRequest.age()
-            ));
-        }
-
+        // Sinon, on ajoute le nouveau client
+        customerDao.insertCustomer(new Customer(
+                customerRegistrationRequest.name(),
+                customerRegistrationRequest.email(),
+                customerRegistrationRequest.age()
+        ));
     }
 
-    public void deleteCustomer(Integer id){
-        if(!customerDao.existPersonWithId(id)){
-            throw new ResourceNotFound("Customer introuvable, id : "+id);
-        }
-        else {
+    public void deleteCustomer(Integer id) {
+        if (!customerDao.existPersonWithId(id)) {
+            throw new ResourceNotFound("Client introuvable, id : " + id);
+        } else {
             customerDao.deleteCustomerById(id);
         }
     }
 
+    public void updateCustomer(Integer id, CustomerUpdateRequest request) {
 
-    public void updateCustomer(Integer id, CustomerUpdateRequest request){
-
-        // recuperer le customerExisting dans la BD en meme temp declancher une exception au cas ou il se trouve pas
+        // Récupérer le client existant dans la BD et déclencher une exception s’il n’est pas trouvé
         Customer customer = getCustomer(id);
 
         boolean change = false;
 
-        if(request.name() != null && !request.name().equals(customer.getName())){
+        if (request.name() != null && !request.name().equals(customer.getName())) {
             customer.setName(request.name());
             change = true;
         }
 
-        if(request.email() != null && !request.email().equals(customer.getEmail())){
-            if(customerDao.existePersonWithEmail(request.email())){
-                throw new DuplicateResourceException("Email deja utilise");
+        if (request.email() != null && !request.email().equals(customer.getEmail())) {
+            if (customerDao.existePersonWithEmail(request.email())) {
+                throw new DuplicateResourceException("Email déjà utilisé");
             }
             customer.setEmail(request.email());
             change = true;
         }
 
-        if(request.age() != null && !request.age().equals(customer.getAge())){
+        if (request.age() != null && !request.age().equals(customer.getAge())) {
             customer.setAge(request.age());
             change = true;
         }
 
-        if(!change){
-            throw new RequestValidationException("No data change fund");
+        if (!change) {
+            throw new RequestValidationException("Aucune donnée modifiée");
         }
 
         customerDao.updateCustomer(customer);
-
-
     }
 }
