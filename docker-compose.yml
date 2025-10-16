@@ -1,6 +1,7 @@
 services:
 
     # le service de la base de données
+    # on peux tres bien choisir un autre nom que "db" ici. Ce n'est pas un mot cle, predefini.
   db:
     container_name: postgres
     image: postgres
@@ -12,8 +13,9 @@ services:
       - db:/data/postgres
     ports:
       - "5332:5432"
+    #Le nom du Reseaux pour que l'API puisse se connecter à la base de données (dbConnexion).
     networks:
-      - db
+      - dbConnexion
     restart: unless-stopped
 
     # le service de l'api
@@ -22,17 +24,24 @@ services:
     image: faycaldr/amigoscode-api
     environment:
       spring.datasource.url: jdbc:postgresql://db:5432/customer
+    # 8088 est le port sur la machine hôte(localhost)
+    # et le port 8080 est le port à l'intérieur du conteneur.Par default Tocamt(serveur web)
+    #ecoute sur le port 8080.
     ports:
       - "8088:8080"
+    #Le nom du Reseaux pour que l'API puisse se connecter à la base de données (dbConnexion).
     networks:
-      - db
+      - dbConnexion
+    # Cela indique que l’API attend que la base démarre avant de se lancer.
+    # Mais ⚠️ ça n'attend pas que la base soit complètement prête, seulement
+    #que le conteneur PostgreSQL soit démarré.
     depends_on:
       - db
     restart: unless-stopped
 
-
+#Configuration du réseaux de connexion entre l'API et la base de données.
 networks:
-  db:
+  dbConnexion:
     driver: bridge
 volumes:
   db:

@@ -21,6 +21,7 @@ Je peux aussi y définir les contraintes sur les colonnes de cette table (entity
 )
 public class Customer {
 
+
     @Id
     @SequenceGenerator(
             // Le "name" est le nom de la séquence utilisé dans le code Java. Il n'affecte pas la BD.
