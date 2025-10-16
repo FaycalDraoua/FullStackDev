@@ -25,7 +25,6 @@ Ce projet illustre la mise en œuvre de bonnes pratiques **DevOps** et **backend
 4. **Déploiement** → AWS (conteneur automatisé)
 
 ![Pipeline CI/CD](Backend-Pipline-Architecture.png)  
-*(Schéma illustratif du pipeline — à ajouter si tu as une image)*
 
 ---
 
