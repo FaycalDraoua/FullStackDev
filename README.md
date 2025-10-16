@@ -1,13 +1,13 @@
-# 🚀 FullStackDev – Application backend CI/CD (Spring Boot)
+# FullStackDev – Application backend CI/CD (Spring Boot)
 
-## 🧩 Description
+## Description
 **FullStackDev** est une application web backend développée avec **Java Spring Boot**, conçue pour démontrer un **pipeline CI/CD complet** intégrant compilation, tests, build, conteneurisation et déploiement automatisé sur AWS.
 
 Ce projet illustre la mise en œuvre de bonnes pratiques **DevOps** et **backend Java**, en reproduisant un environnement de livraison continue professionnel.
 
 ---
 
-## ⚙️ Technologies principales
+## Technologies principales
 - **Langage :** Java 17  
 - **Framework :** Spring Boot  
 - **Base de données :** PostgreSQL  
@@ -18,7 +18,7 @@ Ce projet illustre la mise en œuvre de bonnes pratiques **DevOps** et **backend
 
 ---
 
-## 🏗️ Architecture du projet
+##  Architecture du projet
 1. **Compilation et tests** → Maven + GitHub Actions  
 2. **Construction de l’image Docker** → Jib  
 3. **Publication** → Docker Hub  
@@ -29,7 +29,7 @@ Ce projet illustre la mise en œuvre de bonnes pratiques **DevOps** et **backend
 
 ---
 
-## 🔍 Fonctionnalités
+## Fonctionnalités
 - API RESTful pour la gestion des entités (CRUD)
 - Configuration de pipelines automatisés CI/CD
 - Migration versionnée de la base de données (Flyway)
@@ -37,7 +37,7 @@ Ce projet illustre la mise en œuvre de bonnes pratiques **DevOps** et **backend
 
 ---
 
-## 🧠 Objectif du projet
+## Objectif du projet
 Ce projet a pour but de :
 - Mettre en pratique la **construction et le déploiement automatisé** d’une application Java.
 - Illustrer les étapes d’un pipeline **CI/CD complet** de bout en bout.
@@ -45,13 +45,13 @@ Ce projet a pour but de :
 
 ---
 
-## 🔗 Liens utiles
+## Liens utiles
 - **Docker Hub :** [faycaldr](https://hub.docker.com/repositories/faycaldr)  
 - **LinkedIn :** [Fayçal Draoua Derbouz](https://www.linkedin.com/in/faycaldraoua)  
 
 ---
 
-## 👤 Auteur
+## Auteur
 **Fayçal Draoua Derbouz**  
 Étudiant en maîtrise – Intelligence et gestion des données (UQAM)  
 Passionné par le développement backend, l’ingénierie des données et les pratiques DevOps.
